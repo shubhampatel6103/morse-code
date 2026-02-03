@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import Title from "@/components/title";
 import TutorialContent from "@/components/tutorialContent/tutorialContent";
 
 export default function Tutorial() {

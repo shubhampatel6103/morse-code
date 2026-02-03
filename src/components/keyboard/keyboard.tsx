@@ -84,7 +84,7 @@ const Keyboard = ({ onSubmit, showSubmit = true }: KeyboardProps) => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [allKeys]);
 
   const KeyButton = ({ keyChar }: { keyChar: string }) => (
     <button

@@ -13,10 +13,6 @@ export default function Receive() {
     setWord(commonWords[randomIndex]);
   };
 
-  useEffect(() => {
-    getRandomWord();
-  }, []);
-
   return (
     <main className="bg-orange-200 min-h-screen flex flex-col items-center justify-center p-8">
       <Title text="Receive" />

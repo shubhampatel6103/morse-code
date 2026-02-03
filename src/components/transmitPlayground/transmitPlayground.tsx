@@ -22,9 +22,7 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
   // Timing constants (in milliseconds) - based on dot length
   const DOT_LENGTH = 100; // One dot unit
   const DASH_LENGTH = DOT_LENGTH * 3; // Dash is 3 dots
-  const SAME_LETTER_GAP = DOT_LENGTH * 1; // 1 dot gap = same letter
   const LETTER_GAP = DOT_LENGTH * 3; // 3 dot gaps = space between letters
-  const WORD_GAP = DOT_LENGTH * 7; // 7 dot gaps = space between words
   const CLEAR_GAP = DOT_LENGTH * 50; // 50+ dot gaps = clear display
 
   // Initialize audio context
@@ -93,7 +91,7 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
             }
             setCurrentMorse((prev) => prev + symbol);
           }
-          
+
           // If longer than dash length, it's invalid - ignore it
           const releaseTime = Date.now();
           setLastReleaseTime(releaseTime);
@@ -111,7 +109,7 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [isPressed, pressStartTime]);
+  }, [isPressed, pressStartTime, DASH_LENGTH, playBeep, stopBeep]);
 
   // Update progress bar while key is pressed
   useEffect(() => {
@@ -135,12 +133,11 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
         cancelAnimationFrame(animationFrame);
       }
     };
-  }, [isPressed, pressStartTime]);
+  }, [isPressed, pressStartTime, DASH_LENGTH]);
 
   // Handle gap timing between presses using a polling interval so we reliably
   // detect when gaps cross thresholds (letter/word/clear).
   useEffect(() => {
-
     const interval = setInterval(() => {
       // If user is pressing again, skip checking
       if (isPressed) return;
@@ -176,7 +173,15 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [lastReleaseTime, isPressed, onSubmit, currentMorse, displayText]);
+  }, [
+    lastReleaseTime,
+    isPressed,
+    onSubmit,
+    currentMorse,
+    displayText,
+    LETTER_GAP,
+    CLEAR_GAP,
+  ]);
 
   const handleClear = () => {
     setDisplayText("");
