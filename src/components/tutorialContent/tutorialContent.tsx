@@ -167,13 +167,13 @@ const TutorialContent = () => {
         <div className="text-sm text-gray-700 font-press-start-2p">Mode:</div>
         <button
           onClick={() => setHintMode(true)}
-          className={`px-3 py-1 rounded border ${hintMode ? "bg-orange-500 text-white" : "bg-white"}`}
+          className={`px-3 py-1 rounded border ${hintMode ? "bg-orange-500 text-white" : "bg-white text-black"}`}
         >
           Hint
         </button>
         <button
           onClick={() => setHintMode(false)}
-          className={`px-3 py-1 rounded border ${!hintMode ? "bg-orange-500 text-white" : "bg-white"}`}
+          className={`px-3 py-1 rounded border ${!hintMode ? "bg-orange-500 text-white" : "bg-white text-black"}`}
         >
           No Hint
         </button>
