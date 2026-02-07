@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import Title from "@/components/title";
 import Button from "@/components/button";
 import ReceivePlayground from "@/components/receivePlayground/receivePlayground";
@@ -10,7 +10,7 @@ import { HomeIcon } from "@heroicons/react/24/solid";
 export default function ReceiveExercise() {
   const [target, setTarget] = useState("");
   const [feedback, setFeedback] = useState<"" | "correct" | "incorrect">("");
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [speed, setSpeed] = useState<"fast" | "slow">("fast");
 
   const newWord = () => {
     setFeedback("");
@@ -18,8 +18,12 @@ export default function ReceiveExercise() {
     setTarget(w);
   };
 
-  useEffect(() => {
+  const onMount = useEffectEvent(() => {
     newWord();
+  });
+
+  useEffect(() => {
+    onMount();
   }, []);
 
   const checkGuess = (text: string) => {
@@ -51,12 +55,28 @@ export default function ReceiveExercise() {
       </div>
 
       <div className="mb-6 w-full max-w-2xl">
-        <p className="sr-only">
-          A random word has been chosen and will be played in Morse code.
-        </p>
+        <div className="mb-4 flex justify-center gap-4">
+          <button
+            onClick={() => setSpeed("fast")}
+            className={`flex items-center gap-2 bg-orange-700 hover:bg-orange-900 text-white font-bold py-2 px-4 rounded font-press-start-2p text-sm ${
+              speed === "fast" ? "opacity-100" : "opacity-50"
+            }`}
+          >
+            Fast
+          </button>
+          <button
+            onClick={() => setSpeed("slow")}
+            className={`flex items-center gap-2 bg-orange-700 hover:bg-orange-900 text-white font-bold py-2 px-4 rounded font-press-start-2p text-sm ${
+              speed === "slow" ? "opacity-100" : "opacity-50"
+            }`}
+          >
+            Slow
+          </button>
+        </div>
+
         <ReceivePlayground
           target={target}
-          dotLength={100}
+          dotLength={speed === "fast" ? 100 : 200}
           onSubmit={checkGuess}
         />
       </div>

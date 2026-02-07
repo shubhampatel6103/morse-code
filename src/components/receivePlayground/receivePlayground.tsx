@@ -98,7 +98,8 @@ export default function ReceivePlayground({
   }, [target]);
 
   const doSubmit = () => {
-    if (onSubmit) onSubmit(guess || "");
+    if (guess.trim() === "") return;
+    if (onSubmit) onSubmit(guess.trim());
     setGuess("");
     if (inputRef.current) {
       inputRef.current.focus();
@@ -118,7 +119,11 @@ export default function ReceivePlayground({
         <button
           disabled={isPlaying}
           onClick={() => void playMorseFor(target)}
-          className={`px-4 py-2 rounded text-white ${isPlaying ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
+          className={
+            isPlaying
+              ? "px-4 py-2 font-press-start-2p rounded border-2 border-orange-900 text-orange-900 bg-orange-200 opacity-60 cursor-not-allowed"
+              : "px-4 py-2 font-press-start-2p rounded border-2 border-orange-900 text-orange-900 bg-orange-200 hover:bg-orange-300"
+          }
         >
           {isPlaying ? "Playing…" : "Play Again"}
         </button>
@@ -137,7 +142,7 @@ export default function ReceivePlayground({
         />
         <button
           onClick={doSubmit}
-          className="px-4 py-2 bg-green-600 text-white rounded"
+          className="px-4 py-2 font-press-start-2p rounded border-2 border-orange-900 text-orange-900 bg-orange-200 hover:bg-orange-300"
         >
           Submit
         </button>

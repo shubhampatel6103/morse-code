@@ -35,33 +35,33 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
     return audioContextRef.current;
   };
 
-  // Play beep sound
-  const playBeep = () => {
-    const audioContext = initAudioContext();
-    if (!oscillatorRef.current) {
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-
-      oscillator.frequency.value = 800; // Frequency in Hz
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-
-      oscillator.start();
-      oscillatorRef.current = oscillator;
-    }
-  };
-
-  // Stop beep sound
-  const stopBeep = () => {
-    if (oscillatorRef.current) {
-      oscillatorRef.current.stop();
-      oscillatorRef.current = null;
-    }
-  };
-
   useEffect(() => {
+    // Play beep sound
+    const playBeep = () => {
+      const audioContext = initAudioContext();
+      if (!oscillatorRef.current) {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.value = 800; // Frequency in Hz
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+
+        oscillator.start();
+        oscillatorRef.current = oscillator;
+      }
+    };
+
+    // Stop beep sound
+    const stopBeep = () => {
+      if (oscillatorRef.current) {
+        oscillatorRef.current.stop();
+        oscillatorRef.current = null;
+      }
+    };
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Space") {
         event.preventDefault();
@@ -109,7 +109,7 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [isPressed, pressStartTime, DASH_LENGTH, playBeep, stopBeep]);
+  }, [isPressed, pressStartTime, DASH_LENGTH]);
 
   // Update progress bar while key is pressed
   useEffect(() => {

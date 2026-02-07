@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import Title from "@/components/title";
 import Button from "@/components/button";
 import TransmitPlayground from "@/components/transmitPlayground/transmitPlayground";
@@ -16,9 +16,13 @@ export default function TransmitExercise() {
     const w = getRandomWord();
     setTarget(w);
   };
+  
+  const onMount = useEffectEvent(() => {
+    newWord();
+  });
 
   useEffect(() => {
-    newWord();
+    onMount();
   }, []);
 
   const handleSubmit = (decodedText: string) => {
