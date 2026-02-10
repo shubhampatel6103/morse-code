@@ -186,7 +186,7 @@ const TutorialContent = () => {
       </div>
 
       <div className="text-center">
-        <div className="text-3xl sm:text-4xl font-bold font-press-start-2p text-orange-900 mb-2 break-words">
+        <div className="text-3xl sm:text-4xl font-bold font-press-start-2p text-orange-900 mb-2 wrap-break-word">
           {targetKey}
         </div>
         {hintMode && targetKey && (
