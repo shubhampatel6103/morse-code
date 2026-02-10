@@ -62,8 +62,9 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
       }
     };
 
+    // Key handlers (support Space and Enter)
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.code === "Space") {
+      if (event.code === "Space" || event.code === "Enter") {
         event.preventDefault();
         if (!isPressed) {
           setIsPressed(true);
@@ -74,7 +75,7 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
     };
 
     const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.code === "Space") {
+      if (event.code === "Space" || event.code === "Enter") {
         event.preventDefault();
         if (isPressed && pressStartTime) {
           stopBeep();
@@ -83,7 +84,6 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
           // Determine if it's a dot or dash
           let symbol = "";
           if (pressDuration <= DASH_LENGTH) {
-            // Valid press
             if (pressDuration < DASH_LENGTH / 2) {
               symbol = ".";
             } else {
@@ -92,7 +92,6 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
             setCurrentMorse((prev) => prev + symbol);
           }
 
-          // If longer than dash length, it's invalid - ignore it
           const releaseTime = Date.now();
           setLastReleaseTime(releaseTime);
           setIsPressed(false);
@@ -102,12 +101,52 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
       }
     };
 
+    // Pointer handlers (mouse/touch/pen) — treat primary pointer like Space
+    const handlePointerDown = (ev: PointerEvent) => {
+      // only handle primary pointers
+      if (!ev.isPrimary) return;
+      // ignore right/middle buttons
+      if ((ev as any).button > 0) return;
+      if (!isPressed) {
+        ev.preventDefault();
+        setIsPressed(true);
+        setPressStartTime(Date.now());
+        playBeep();
+      }
+    };
+
+    const handlePointerUp = (ev: PointerEvent) => {
+      if (!ev.isPrimary) return;
+      if (isPressed && pressStartTime) {
+        ev.preventDefault();
+        stopBeep();
+        const pressDuration = Date.now() - pressStartTime;
+
+        let symbol = "";
+        if (pressDuration <= DASH_LENGTH) {
+          if (pressDuration < DASH_LENGTH / 2) symbol = ".";
+          else symbol = "-";
+          setCurrentMorse((prev) => prev + symbol);
+        }
+
+        const releaseTime = Date.now();
+        setLastReleaseTime(releaseTime);
+        setIsPressed(false);
+        setPressStartTime(null);
+        setPressProgress(0);
+      }
+    };
+
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("pointerup", handlePointerUp);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("pointerup", handlePointerUp);
     };
   }, [isPressed, pressStartTime, DASH_LENGTH]);
 
@@ -192,7 +231,7 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
   const thresholdPercentage = (DOT_LENGTH / DASH_LENGTH) * 100; // where dot becomes dash
 
   return (
-    <div className="flex flex-col gap-6 items-center min-w-80 p-8 bg-white rounded-lg border-2 border-orange-600 max-w-2xl">
+    <div className="flex flex-col gap-6 items-center w-full p-6 sm:p-8 bg-white rounded-lg border-2 border-orange-600 max-w-full sm:max-w-2xl">
       {/* Display Area with Progress Bar */}
       <div className="flex items-end gap-4 w-full">
         {/* Morse Display */}
@@ -210,7 +249,7 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
         {/* Progress Bar Container */}
         {showBar && (
           <div className="flex flex-col items-center gap-2">
-            <div className="relative h-22 w-6 bg-gray-200 border-2 border-gray-400 rounded overflow-hidden">
+            <div className="relative h-16 sm:h-22 w-5 sm:w-6 bg-gray-200 border-2 border-gray-400 rounded overflow-hidden">
               {/* Threshold Line (Red) - where dot becomes dash */}
               <div
                 className="absolute left-0 right-0 h-1 bg-red-500 z-10"
@@ -221,7 +260,7 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
               <div
                 className="absolute bottom-0 left-0 right-0 bg-blue-500 transition-all"
                 style={{
-                  height: `${pressProgress * 10}%`,
+                  height: `${pressProgress}%`,
                 }}
               />
             </div>

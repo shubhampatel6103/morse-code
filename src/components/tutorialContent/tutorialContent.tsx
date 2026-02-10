@@ -186,12 +186,17 @@ const TutorialContent = () => {
       </div>
 
       <div className="text-center">
-        <div className="text-4xl font-bold font-press-start-2p text-orange-900 mb-2">
+        <div className="text-3xl sm:text-4xl font-bold font-press-start-2p text-orange-900 mb-2 break-words">
           {targetKey}
         </div>
         {hintMode && targetKey && (
-          <div className="text-sm text-gray-600 font-press-start-2p">
-            {morseCodeMap[targetKey]}
+          <div className="text-sm sm:text-base text-gray-600 font-press-start-2p">
+            {targetKey.length === 1
+              ? morseCodeMap[targetKey]
+              : targetKey
+                  .split("")
+                  .map((ch) => morseCodeMap[ch] ?? "")
+                  .join("\t")}
           </div>
         )}
       </div>

@@ -89,7 +89,7 @@ const Keyboard = ({ onSubmit, showSubmit = true }: KeyboardProps) => {
   const KeyButton = ({ keyChar }: { keyChar: string }) => (
     <button
       onClick={() => toggleKey(keyChar)}
-      className={`h-12 w-12 border-2 rounded cursor-pointer transition-all font-press-start-2p text-sm flex items-center justify-center ${
+      className={`h-10 w-10 sm:h-12 sm:w-12 border-2 rounded cursor-pointer transition-all font-press-start-2p text-sm flex items-center justify-center ${
         selectedKeys.includes(keyChar)
           ? "bg-orange-900 border-orange-700"
           : "bg-orange-500 hover:bg-orange-600 border-orange-600"
@@ -100,13 +100,13 @@ const Keyboard = ({ onSubmit, showSubmit = true }: KeyboardProps) => {
   );
 
   return (
-    <div className="flex flex-col gap-6 p-8 max-w-3xl mx-auto">
+    <div className="flex flex-col gap-6 p-4 sm:p-8 max-w-3xl mx-auto w-full">
       {/* Selection Control Buttons */}
       {showSubmit && (
         <div className="flex gap-3 justify-center flex-wrap">
           <button
             onClick={selectAll}
-            className={`px-4 py-2 font-press-start-2p text-xs rounded border-2 transition-all ${
+            className={`px-3 py-1 sm:px-4 sm:py-2 font-press-start-2p text-xs rounded border-2 transition-all ${
               selectedKeys.length === allKeys.length
                 ? "bg-orange-900 border-orange-700 text-white hover:bg-orange-800"
                 : "bg-orange-500 hover:bg-orange-600 border-orange-600 text-white"
@@ -118,7 +118,7 @@ const Keyboard = ({ onSubmit, showSubmit = true }: KeyboardProps) => {
           </button>
           <button
             onClick={selectAllNumbers}
-            className={`px-4 py-2 font-press-start-2p text-xs rounded border-2 transition-all ${
+            className={`px-3 py-1 sm:px-4 sm:py-2 font-press-start-2p text-xs rounded border-2 transition-all ${
               numberRow.every((num) => selectedKeys.includes(num))
                 ? "bg-orange-900 border-orange-700 text-white hover:bg-orange-800"
                 : "bg-orange-500 hover:bg-orange-600 border-orange-600 text-white"
@@ -130,7 +130,7 @@ const Keyboard = ({ onSubmit, showSubmit = true }: KeyboardProps) => {
           </button>
           <button
             onClick={selectAllLetters}
-            className={`px-4 py-2 font-press-start-2p text-xs rounded border-2 transition-all ${
+            className={`px-3 py-1 sm:px-4 sm:py-2 font-press-start-2p text-xs rounded border-2 transition-all ${
               allLetters.every((letter) => selectedKeys.includes(letter))
                 ? "bg-orange-900 border-orange-700 text-white hover:bg-orange-800"
                 : "bg-orange-500 hover:bg-orange-600 border-orange-600 text-white"
@@ -143,29 +143,49 @@ const Keyboard = ({ onSubmit, showSubmit = true }: KeyboardProps) => {
         </div>
       )}
 
-      {/* Number Row */}
-      <div className="flex gap-2 justify-center">
+      {/* Mobile: numbers first (one row) then letters A-Z in-order */}
+      <div className="sm:hidden w-full">
+        <div className="grid grid-cols-5 gap-2 justify-center mb-2">
+          {numberRow.map((key) => (
+            <KeyButton key={key} keyChar={key} />
+          ))}
+        </div>
+        <div className="grid grid-cols-6 gap-2 justify-center">
+          {(() => {
+            const lettersAlpha = allLetters
+              .slice()
+              .map((s) => s.toUpperCase())
+              .sort();
+            return lettersAlpha.map((key) => (
+              <KeyButton key={key} keyChar={key} />
+            ));
+          })()}
+        </div>
+      </div>
+
+      {/* Number Row (desktop/tablet QWERTY) */}
+      <div className="hidden sm:flex flex-wrap gap-2 justify-center">
         {numberRow.map((key) => (
           <KeyButton key={key} keyChar={key} />
         ))}
       </div>
 
       {/* Top Row (QWERTY) */}
-      <div className="flex gap-2 justify-center">
+      <div className="hidden sm:flex flex-wrap gap-2 justify-center">
         {topRow.map((key) => (
           <KeyButton key={key} keyChar={key} />
         ))}
       </div>
 
       {/* Middle Row (ASDF) */}
-      <div className="flex gap-2 justify-center pl-6">
+      <div className="hidden sm:flex flex-wrap gap-2 justify-center pl-0 sm:pl-6">
         {middleRow.map((key) => (
           <KeyButton key={key} keyChar={key} />
         ))}
       </div>
 
       {/* Bottom Row (ZXC) */}
-      <div className="flex gap-2 justify-center pl-12">
+      <div className="hidden sm:flex flex-wrap gap-2 justify-center pl-0 sm:pl-12">
         {bottomRow.map((key) => (
           <KeyButton key={key} keyChar={key} />
         ))}
@@ -177,7 +197,7 @@ const Keyboard = ({ onSubmit, showSubmit = true }: KeyboardProps) => {
           <button
             onClick={handleSubmit}
             disabled={selectedKeys.length === 0}
-            className={`px-6 py-3 font-press-start-2p text-sm rounded border-2 transition-all ${
+            className={`px-4 py-2 sm:px-6 sm:py-3 font-press-start-2p text-sm rounded border-2 transition-all ${
               selectedKeys.length === 0
                 ? "bg-gray-400 border-gray-500 text-gray-600 cursor-not-allowed"
                 : "bg-orange-500 hover:bg-orange-600 border-orange-600 text-white cursor-pointer"
