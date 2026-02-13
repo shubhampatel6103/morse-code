@@ -260,7 +260,7 @@ const TransmitPlayground = ({ onSubmit }: TransmitPlaygroundProps) => {
               <div
                 className="absolute bottom-0 left-0 right-0 bg-blue-500 transition-all"
                 style={{
-                  height: `${pressProgress}%`,
+                  height: `${pressProgress * 10}%`,
                 }}
               />
             </div>
